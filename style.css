@@ -33,7 +33,7 @@ button {
     column-gap: 2px;
 }
 
-#userInput {
+#user-input {
     box-sizing: border-box;
     /* width: 99.2%;
     height: 70px; */
@@ -41,12 +41,14 @@ button {
     direction: ltr;
     outline: none;
     border: none;
-    /* padding: 40px 5px; */
+    border-radius: 5px;
+    padding-right: 7px;
     background: whitesmoke;
+    box-shadow: inset 1px 1px 3px 1px black;
     grid-column: span 4;
 }
 
-.btn {
+.btn, .clear {
     /*width: 24%;
     height: 45px;*/
     border: none;
