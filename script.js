@@ -7,9 +7,9 @@ const dotBtn = document.querySelector('.dot');
 const equalsBtn = document.querySelector('.btnEqual');
 const clearBtn = document.querySelector('.clear');
 const backspaceBtn = document.querySelector('.backspace');
-const numbersDisplayed = [];
-const operatorIndexes = [];
-const operatorsDisplayed = [];
+let numbersDisplayed = [];
+let operatorIndexes = [];
+let operatorsDisplayed = [];
 
 displayableBtn.forEach((btn) => btn.addEventListener("click", () => displayValue(btn)));
 function displayValue(clickedBtn){
@@ -37,6 +37,45 @@ function divide(firstNum, nextNum) {
   return +firstNum / +nextNum;
 }
 
+equalsBtn.addEventListener("mousedown", () => {
+    findOperatorValuesAndIndexes(userInput.value);
+    getEachNumSplitted(userInput.value);
+})
+
+equalsBtn.addEventListener("mouseup", () => operate(numbersDisplayed[0],numbersDisplayed[1], operatorsDisplayed[0]));
+function operate (firstNum,nextNum, operator){
+    switch (operator) {
+      case (operator = "+"):
+        userInput.value = add(firstNum, nextNum);
+        numbersDisplayed = [];
+        operatorIndexes = [];
+        operatorsDisplayed = [];
+        firstNum = userInput.value;
+        break;
+      case (operator = "-"):
+        userInput.value = subtract(firstNum, nextNum);
+        numbersDisplayed = [];
+        operatorIndexes = [];
+        operatorsDisplayed = [];
+        firstNum = userInput.value;
+        break;
+      case (operator = "*"):
+        userInput.value = multiply(firstNum, nextNum);
+        numbersDisplayed = [];
+        operatorIndexes = [];
+        operatorsDisplayed = [];
+        firstNum = userInput.value;
+        break;
+      case (operator = "/"):
+        userInput.value = divide(firstNum, nextNum);
+        numbersDisplayed = [];
+        operatorIndexes = [];
+        operatorsDisplayed = [];
+        firstNum = userInput.value;
+        break;
+    }
+}
+
 function findOperatorValuesAndIndexes(expression) {
     expression.split("").forEach((digit, index) => {
         if(operatorBtn.includes(digit)){
@@ -54,6 +93,4 @@ function clear() {
 backspaceBtn.addEventListener("click", () => deleteDigit())
 function deleteDigit(){
     userInput.value = userInput.value.substring(0, userInput.value.length - 1);
-    findOperatorValuesAndIndexes(userInput.value);
-    getEachNumSplitted(userInput.value);
 }
