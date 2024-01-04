@@ -17,24 +17,41 @@ function displayValue(clickedBtn){
 }
 
 function getEachNumSplitted(toCalculate) {
-    const splittedExpression = toCalculate.split(/[+\-*/]/);
-    splittedExpression.forEach(num => numbersDisplayed.push(num));
+    //if number starts with -, than push first num with a - attached to it. 
+    const negativeNum = toCalculate.charAt(0);
+    if(negativeNum === '-'){
+        let startsWithNegative = toCalculate.slice(1).split(/[+\-*/]/);
+        for (let i = 0; i < startsWithNegative.length; i++){
+            //only first number gets '-'
+            if (i === 0){
+                numbersDisplayed.push(parseFloat(-startsWithNegative[i]));
+            } else {
+                numbersDisplayed.push(parseFloat(startsWithNegative[i]));
+            }
+        }
+    } else {
+      //if number isn't negative
+      const splittedExpression = toCalculate.split(/[+\-*/]/);
+      splittedExpression.forEach((num) => {
+        numbersDisplayed.push(parseFloat(num));
+      });
+    }
 }
 
 function add(firstNum, nextNum){
-    return +firstNum + +nextNum; 
+    return parseFloat(firstNum + nextNum); 
 }
 
 function subtract(firstNum, nextNum) {
-  return +firstNum - +nextNum;
+  return parseFloat(firstNum - nextNum);
 }
 
 function multiply(firstNum, nextNum) {
-  return +firstNum * +nextNum;
+  return parseFloat(firstNum * nextNum);
 }
 
 function divide(firstNum, nextNum) {
-  return +firstNum / +nextNum;
+  return parseFloat(firstNum / nextNum);
 }
 
 equalsBtn.addEventListener("mousedown", () => {
@@ -42,7 +59,22 @@ equalsBtn.addEventListener("mousedown", () => {
     getEachNumSplitted(userInput.value);
 })
 
-equalsBtn.addEventListener("mouseup", () => operate(numbersDisplayed[0],numbersDisplayed[1], operatorsDisplayed[0]));
+equalsBtn.addEventListener("mouseup", () => {
+    if(userInput.value.charAt(0) === '-'){
+        operate(
+          numbersDisplayed[0],
+          numbersDisplayed[1],
+          operatorsDisplayed[1]
+        );
+    } else {
+        operate(
+          numbersDisplayed[0],
+          numbersDisplayed[1],
+          operatorsDisplayed[0]
+        );
+    }
+
+});
 function operate (firstNum,nextNum, operator){
     switch (operator) {
       case (operator = "+"):
