@@ -3,7 +3,7 @@ const displayableBtn = document.querySelectorAll('.btn');
 const numberBtn = document.querySelectorAll('.number');
 const operatorBtn = [...document.querySelectorAll('.operator')].map((el) => el.id);
 const userInput = document.querySelector('#user-input');
-const dotBtn = document.querySelector('.dot');
+const dotBtn = [document.querySelector('.dot')].map((el) => el.id);
 const equalsBtn = document.querySelector('.btnEqual');
 const clearBtn = document.querySelector('.clear');
 const backspaceBtn = document.querySelector('.backspace');
@@ -11,9 +11,52 @@ let numbersDisplayed = [];
 let operatorIndexes = [];
 let operatorsDisplayed = [];
 
-displayableBtn.forEach((btn) => btn.addEventListener("click", () => displayValue(btn)));
+displayableBtn.forEach((btn) => btn.addEventListener("mousedown", () => {
+    displayValue(btn);
+    if(operatorBtn.includes(btn.id)){
+      operatorIndexes = [];
+      operatorsDisplayed = [];
+    findOperatorValuesAndIndexes(userInput.value);
+    }
+    numbersDisplayed = [];
+    getEachNumSplitted(userInput.value);
+}));
 function displayValue(clickedBtn){
-    userInput.value += clickedBtn.id;
+    let expression = userInput.value;
+    if (
+      dotBtn.includes(clickedBtn.id)
+    ) {
+      if(dotBtn.includes(expression.charAt(expression.length - 1))) {
+        stopDoubleOperatorOrDot(clickedBtn);
+      } else if (
+        expression.substring(0, operatorIndexes[0]).includes(".") &&
+        operatorIndexes.length < 1
+      ) {
+        allowOnlyOneDot();
+      } else if (
+        expression.substring(operatorIndexes[operatorIndexes.length - 1]).includes(".") &&
+        operatorIndexes.length >= 1
+      ) {
+        allowOnlyOneDot();
+      } else {
+        userInput.value += clickedBtn.id;
+      }
+    } else if (
+      operatorBtn.includes(clickedBtn.id) &&
+      operatorBtn.includes(expression.charAt(expression.length - 1))
+    ) {
+        stopDoubleOperatorOrDot(clickedBtn);
+    } else {
+      userInput.value += clickedBtn.id;
+    }
+}
+
+function allowOnlyOneDot(){
+    userInput.value = userInput.value.substring(0, userInput.value.length);
+}
+
+function stopDoubleOperatorOrDot(clickedBtn){
+    userInput.value = userInput.value.substring(0, userInput.value.length - 1) + clickedBtn.id;
 }
 
 function getEachNumSplitted(toCalculate) {
@@ -53,11 +96,6 @@ function multiply(firstNum, nextNum) {
 function divide(firstNum, nextNum) {
   return parseFloat(firstNum / nextNum);
 }
-
-equalsBtn.addEventListener("mousedown", () => {
-    findOperatorValuesAndIndexes(userInput.value);
-    getEachNumSplitted(userInput.value);
-})
 
 equalsBtn.addEventListener("mouseup", () => {
     if(userInput.value.charAt(0) === '-'){
