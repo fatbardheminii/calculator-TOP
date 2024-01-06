@@ -1,6 +1,6 @@
 const allBtn = document.querySelectorAll('button');
 const displayableBtn = document.querySelectorAll('.btn');
-const numberBtn = document.querySelectorAll('.number');
+const numberBtn = [...document.querySelectorAll('.number')].map((el) => el.id);
 const operatorBtn = [...document.querySelectorAll('.operator')].map((el) => el.id);
 const userInput = document.querySelector('#user-input');
 const dotBtn = [document.querySelector('.dot')].map((el) => el.id);
@@ -8,6 +8,7 @@ const equalsBtn = document.querySelector('.btnEqual');
 const clearBtn = document.querySelector('.clear');
 const backspaceBtn = document.querySelector('.backspace');
 let numbersDisplayed = [];
+let numberIndexes = [];
 let operatorIndexes = [];
 let operatorsDisplayed = [];
 
@@ -18,8 +19,11 @@ displayableBtn.forEach((btn) => btn.addEventListener("mousedown", () => {
       operatorsDisplayed = [];
     findOperatorValuesAndIndexes(userInput.value);
     }
-    numbersDisplayed = [];
-    getEachNumSplitted(userInput.value);
+    if(numberBtn.includes(btn.id)){
+      numbersDisplayed = [];
+      numberIndexes = [];
+      getEachNumSplitted(userInput.value);
+    }
 }));
 function displayValue(clickedBtn){
     let expression = userInput.value;
@@ -63,38 +67,38 @@ function getEachNumSplitted(toCalculate) {
     //if number starts with -, than push first num with a - attached to it. 
     const negativeNum = toCalculate.charAt(0);
     if(negativeNum === '-'){
-        let startsWithNegative = toCalculate.slice(1).split(/[+\-*/]/);
+    let startsWithNegative = toCalculate.slice(1).split(/[+\-*/]/);
         for (let i = 0; i < startsWithNegative.length; i++){
             //only first number gets '-'
             if (i === 0){
                 numbersDisplayed.push(parseFloat(-startsWithNegative[i]));
             } else {
                 numbersDisplayed.push(parseFloat(startsWithNegative[i]));
+                numberIndexes.push(parseFloat(i));
             }
         }
     } else {
       //if number isn't negative
-      const splittedExpression = toCalculate.split(/[+\-*/]/);
-      splittedExpression.forEach((num) => {
-        numbersDisplayed.push(parseFloat(num));
+    const splittedExpression = toCalculate.split(/[+\-*/]/);
+      splittedExpression.forEach((num, i) => {
+           numbersDisplayed.push(parseFloat(num));
+           numberIndexes.push(parseFloat(i));
       });
     }
 }
 
-function add(firstNum, nextNum){
-    return parseFloat(firstNum + nextNum); 
+function emptyArrays() {
+  numbersDisplayed = [];
+  numberIndexes = [];
+  operatorIndexes = [];
+  operatorsDisplayed = [];
 }
 
-function subtract(firstNum, nextNum) {
-  return parseFloat(firstNum - nextNum);
-}
-
-function multiply(firstNum, nextNum) {
-  return parseFloat(firstNum * nextNum);
-}
-
-function divide(firstNum, nextNum) {
-  return parseFloat(firstNum / nextNum);
+function calculate(firstNum, nextNum, operator){
+  if (operator === '+') return firstNum + nextNum;
+  if (operator === "-") return firstNum - nextNum;
+  if (operator === "*") return firstNum * nextNum;
+  if (operator === "/") return firstNum / nextNum;
 }
 
 equalsBtn.addEventListener("mouseup", () => {
@@ -114,36 +118,8 @@ equalsBtn.addEventListener("mouseup", () => {
 
 });
 function operate (firstNum,nextNum, operator){
-    switch (operator) {
-      case (operator = "+"):
-        userInput.value = add(firstNum, nextNum);
-        numbersDisplayed = [];
-        operatorIndexes = [];
-        operatorsDisplayed = [];
-        firstNum = userInput.value;
-        break;
-      case (operator = "-"):
-        userInput.value = subtract(firstNum, nextNum);
-        numbersDisplayed = [];
-        operatorIndexes = [];
-        operatorsDisplayed = [];
-        firstNum = userInput.value;
-        break;
-      case (operator = "*"):
-        userInput.value = multiply(firstNum, nextNum);
-        numbersDisplayed = [];
-        operatorIndexes = [];
-        operatorsDisplayed = [];
-        firstNum = userInput.value;
-        break;
-      case (operator = "/"):
-        userInput.value = divide(firstNum, nextNum);
-        numbersDisplayed = [];
-        operatorIndexes = [];
-        operatorsDisplayed = [];
-        firstNum = userInput.value;
-        break;
-    }
+  userInput.value = calculate(firstNum, nextNum, operator);
+  emptyArrays();
 }
 
 function findOperatorValuesAndIndexes(expression) {
