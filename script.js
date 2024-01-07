@@ -28,9 +28,39 @@ displayableBtn.forEach((btn) => btn.addEventListener("mousedown", () => {
 function displayValue(clickedBtn){
     let expression = userInput.value;
     if (
-      dotBtn.includes(clickedBtn.id)
+      //length of each num max 10 digits from begin to first operator
+      expression.slice(0, operatorIndexes[0]).length >= 10 && 
+      numberBtn.includes(clickedBtn.id) &&
+      operatorIndexes.length < 1
+      ){
+      userInput.value;
+    } else if (
+      //length of each num max 10 digits from first operator to end
+      expression.slice(operatorIndexes[0]).length >= 10 &&
+      numberBtn.includes(clickedBtn.id) &&
+      operatorIndexes.length >= 1
     ) {
-      if(dotBtn.includes(expression.charAt(expression.length - 1))) {
+      userInput.value;
+    } else if (
+      //if first digit operator don't display except '-'
+      operatorBtn.includes(clickedBtn.id) &&
+      expression.length < 1 &&
+      numbersDisplayed.length < 1
+    ) {
+      if (clickedBtn.id === "-" && expression.length < 1) {
+        userInput.value += clickedBtn.id;
+      } else {
+        userInput.value;
+      }
+    } else if(
+      //first digit is '-'.. and clickedBtn = operator, don't change anything
+      expression.charAt(0) === '-' && 
+      expression.length <=1 &&
+      operatorBtn.includes(clickedBtn.id)
+      ) {
+        userInput.value;
+    } else if (dotBtn.includes(clickedBtn.id)) {
+      if (dotBtn.includes(expression.charAt(expression.length - 1))) {
         stopDoubleOperatorOrDot(clickedBtn);
       } else if (
         expression.substring(0, operatorIndexes[0]).includes(".") &&
@@ -38,7 +68,9 @@ function displayValue(clickedBtn){
       ) {
         allowOnlyOneDot();
       } else if (
-        expression.substring(operatorIndexes[operatorIndexes.length - 1]).includes(".") &&
+        expression
+          .substring(operatorIndexes[operatorIndexes.length - 1])
+          .includes(".") &&
         operatorIndexes.length >= 1
       ) {
         allowOnlyOneDot();
@@ -49,7 +81,26 @@ function displayValue(clickedBtn){
       operatorBtn.includes(clickedBtn.id) &&
       operatorBtn.includes(expression.charAt(expression.length - 1))
     ) {
-        stopDoubleOperatorOrDot(clickedBtn);
+      stopDoubleOperatorOrDot(clickedBtn);
+    } else if (
+      //if first digit is '-' and already 2 operators in expression, and btn clicked is operator--> calculate numbers
+      //this calculates always the first 2 numbers.. 3rd number can't be displayed
+      operatorBtn.includes(clickedBtn.id) &&
+      numbersDisplayed.length >= 2 &&
+      operatorIndexes.length >= 2 &&
+      userInput.value.charAt(0) === "-"
+    ) {
+      operate(numbersDisplayed[0], numbersDisplayed[1], operatorsDisplayed[1]);
+      userInput.value += clickedBtn.id;
+    } else if (
+      //if there are already 2 operators in expression, and btn clicked is operator--> calculate numbers
+      //this calculates always the first 2 numbers.. 3rd number can't be displayed
+      operatorBtn.includes(clickedBtn.id) &&
+      operatorIndexes.length >= 1 &&
+      userInput.value.charAt(0) !== "-"
+    ) {
+      operate(numbersDisplayed[0], numbersDisplayed[1], operatorsDisplayed[0]);
+      userInput.value += clickedBtn.id;
     } else {
       userInput.value += clickedBtn.id;
     }
@@ -118,7 +169,10 @@ equalsBtn.addEventListener("mouseup", () => {
 
 });
 function operate (firstNum,nextNum, operator){
-  userInput.value = calculate(firstNum, nextNum, operator);
+  //if endResult is Integer return endResult, else only 2 digits after decimal point allowed
+  let endResult = calculate(firstNum, nextNum, operator);
+  userInput.value = Number.isInteger(endResult) ? 
+    endResult : endResult.toFixed(2);
   emptyArrays();
 }
 
