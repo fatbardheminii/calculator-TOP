@@ -193,7 +193,8 @@ function operate(firstNum, nextNum, operator) {
 
 clearBtn.addEventListener("click", () => clear());
 function clear() {
-  userInput.value = 0;
+  emptyArrays();
+  userInput.value = '';
 }
 
 backspaceBtn.addEventListener("click", () => deleteDigit());
