@@ -17,7 +17,7 @@ Welcome to the **Calculator Web App** project! This simple yet powerful calculat
 
 1. **Try the Calculator Live!**
 
-   Experience the calculator by trying it on the live demo hosted on my [GitHub Page](https://https://fatbardheminii.github.io/calculator-TOP/).
+   Experience the calculator by trying it on the live demo hosted on my [GitHub Page](https://fatbardheminii.github.io/calculator-TOP/).
 
 2. **Start Calculating!**
   Click on the on-screen buttons to input numbers and perform operations. Use the keyboard for an even more efficient input method.
